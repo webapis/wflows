@@ -1,0 +1,30 @@
+{
+  "name": "wflows",
+  "version": "1.0.0",
+  "description": "workflow library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snipe": "node snipe.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webapis/wflows.git"
+  },
+  "author": "webapis.github@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/webapis/wflows/issues"
+  },
+  "homepage": "https://github.com/webapis/wflows#readme",
+  "keywords": [
+    "wflows"
+  ],
+  "devDependencies": {
+    "puppeteer": "^10.4.0"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "make-dir": "^3.1.0"
+  }
+}
