@@ -1,4 +1,5 @@
 
+const { stateTableLog } = require('./state-table-log')
 const EventEmitter = require('events');
 const promiseEventTypes = {
     PROMISE_ATTACHED: 'PROMISE_ATTACHED',
@@ -6,7 +7,7 @@ const promiseEventTypes = {
     PROMISE_REJECTED: 'PROMISE_REJECTED',
     RUN_NEXT_PROMISE: 'RUN_NEXT_PROMISE',
     BATCH_NAME_REGISTERED: 'BATCH_NAME_REGISTERED',
-    PROMISE_POOL_EMPTY: 'PROMISE_POOL_EMPTY'
+    QUEUE_EMPTY: 'QUEUE_EMPTY'
 
 }
 class PromiseEmitter extends EventEmitter {
@@ -29,58 +30,87 @@ class PromiseEmitter extends EventEmitter {
 
         });
 
-        this.on(promiseEventTypes.PROMISE_ATTACHED, function ({ batchName, uuid, props, unshift, retry, retries, sync }) {
-
+        this.on(promiseEventTypes.PROMISE_ATTACHED, function (props) {
+            const { unshift } = props
+            this.total.push(props);
             if (unshift) {
-                this.queue.unshift({ batchName, uuid, props, retries, retry ,unshift,sync})
-             
+                this.queue.unshift(props)
+
             }
             else {
-                this.queue.push({ batchName, uuid, props, retries, retry,unshift,sync })
-               
+                this.queue.push(props)
+
 
             }
-           this.runNextPromise()
-       
+            this.runNextPromise()
 
-         //   this.emit(promiseEventTypes.PROMISE_POOL_EMPTY, { batchName })
+
+           
 
         });
 
 
-        this.on(promiseEventTypes.PROMISE_RESOLVED, function ({ batchName, props, uuid }) {
+        this.on(promiseEventTypes.PROMISE_RESOLVED, function (props) {
+            const { uuid } = props
 
-            this.resolved.push({ batchName, uuid, props })
-            
+            this.resolved.push(props)
+
+            const promiseToRemoveIndex = this.promises.findIndex(
+                p => p.uuid === uuid
+            );
+
+            this.promises.splice(promiseToRemoveIndex, 1);
+            stateTableLog({ self: this, props })
             this.runNextPromise()
-          
+
         });
 
-        this.on(promiseEventTypes.PROMISE_REJECTED, function ({ batchName, props, unshift = false, uuid, error }) {
+        this.on(promiseEventTypes.PROMISE_REJECTED, function (props) {
+            const { uuid, batchName, retries } = props
+            debugger;
 
-            //retry is not available
-            this.rejected.push({ batchName, uuid, props, error })
+            const promiseToRemoveIndex = this.promises.findIndex(
+                p => p.uuid === uuid
+            );
+            this.promises.splice(promiseToRemoveIndex, 1);
+            debugger;
+        
+            const allowedRetries = this.registeredBatchNames[batchName].retries
+            debugger;
+            if (retries > 0 && retries === allowedRetries) {
+                debugger;
+                this.rejected.push(props)
+            } else {
+                debugger;
+                let increment = retries === 0 ? 1 : 1+retries
+                debugger
+                this.queue.push({ ...props, retry: true, retries: increment })
+            }
+
+            stateTableLog({ self: this, props })
             this.runNextPromise()
-           // this.emit(promiseEventTypes.RUN_NEXT_PROMISE, { batchName, props, uuid, unshift: false })
-           // this.emit(promiseEventTypes.PROMISE_POOL_EMPTY, { batchName })
-            //retry is abalable
           
+
         });
 
     }//constructor
 
-    runNextPromise(){
+    runNextPromise() {
+        if (this.queue.length === 0 && this.promises.length === 0) {
+            this.emit(promiseEventTypes.QUEUE_EMPTY, {})
+        }
         for (let i = 0; i < this.queue.length; i++) {
             const { batchName } = this.queue[i]
-         
+
             const batchCounter = this.promises.length === 0 ? 0 : this.promises.filter(f => f.batchName === batchName).length;
             const registeredBachCounter = this.registeredBatchNames[batchName].concurrencyLimit
-         
+
             const freeBatchSpaces = registeredBachCounter - batchCounter;
 
             if (freeBatchSpaces > 0 && this.sync === false) {
-              
+
                 const nextbatch = this.queue[i];
+
                 const { sync } = nextbatch;
                 this.sync = sync
 
@@ -91,13 +121,14 @@ class PromiseEmitter extends EventEmitter {
                 );
 
                 this.queue.splice(queueToRemoveIndex, 1);
-                //stateTableLog({ self: this, promise: nextpromise })
-         debugger;
+             
+                stateTableLog({ self: this, props: nextbatch })
                 this.emit(promiseEventTypes.RUN_NEXT_PROMISE, nextbatch)
             } else {
-             
+
                 continue;
             }
+
         }
     }
 

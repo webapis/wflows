@@ -4,8 +4,8 @@ const { puppeteerCrawler } = require('./index')
 
 const { handlePageFunction } = require('./books')
 
-puppeteerCrawler({ handlePageFunction, headless: false, preNavHook: null, postNavHook: null,
+puppeteerCrawler({ handlePageFunction, headless: true, preNavHook: null, postNavHook: null,
     
-    urls: [{ url: 'https://books.toscrape.com/', userData: '', batchName: 'books', unshift: false, retry: false, retries: 0, sync: false }],
+    urls: [{ url: 'https://books.toscrape.com/catalogue/category/books/religion_12/index.html', userData: {}, batchName: 'books', unshift: false, retry: false, retries: 0, sync: false }],
  
-    batches: [{ batchName: 'books', concurrencyLimit: 2, retries: 3 }] })
+    batches: [{ batchName: 'books', concurrencyLimit: 20, retries: 3 }] })

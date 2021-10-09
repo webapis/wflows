@@ -5,7 +5,8 @@ const { saveData } = require('../crawler/utillty')
 const { enqueueLink } = require('../crawler/enqueueLink')
 const { requestQueue } = require('../crawler/requestQueue')
 
-async function extractPageData({ page }) {
+async function extractPageData(props) {
+  const { page } = props
   const url = await page.url()
   const book = await page.evaluate(() => {
     const productDescription = document.querySelector('article.product_page > p').innerHTML
@@ -26,7 +27,8 @@ async function extractPageData({ page }) {
 }
 
 
-async function handlePageFunction({ page, userData,batchName, unshift ,sync }) {
+async function handlePageFunction(props) {
+  const { page, userData} = props
 
   await page.waitForSelector('.default')
   const { output } = userData
@@ -34,6 +36,7 @@ async function handlePageFunction({ page, userData,batchName, unshift ,sync }) {
   const sideBar = await page.$('.sidebar')
 
   if (!url.includes('page-') && sideBar) {
+
     const hasPagination = await page.$('.pager')
     if (hasPagination) {
 
@@ -44,7 +47,7 @@ async function handlePageFunction({ page, userData,batchName, unshift ,sync }) {
 
       for (let i = 2; i <= totalPages; i++) {
         const nextPageUrl = `https://books.toscrape.com/catalogue/category/books_1/page-${i}.html`
-        requestQueue.push({ url: nextPageUrl, userData,batchName, unshift ,sync })
+        requestQueue.push({ ...props, url: nextPageUrl })
       }
 
     }
@@ -52,14 +55,16 @@ async function handlePageFunction({ page, userData,batchName, unshift ,sync }) {
   }
 
   if (sideBar) {
-    await enqueueLink({ selector: '.image_container a', page, userData ,batchName, unshift ,sync})
+
+    await enqueueLink({ selector: '.image_container a', ...props })
 
   }
 
   const productDetailImageContainer = await page.$('#product_description')
 
   if (productDetailImageContainer) {
-    const product = await extractPageData({ page })
+debugger;
+    const product = await extractPageData(props)
 
     saveData({ data: product, output, filename: 'books.json' })
 
