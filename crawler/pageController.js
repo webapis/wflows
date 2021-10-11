@@ -28,9 +28,9 @@ async function pageController(props) {
     });
 
     //    const timeout = retries === 0 ? 30000 : retries * 30000
-    process.env.LOCAL === 'TRUE' ? await page.goto(url, { waitUntil: 'networkidle2', timeout }) : await page.goto(url);
+    // process.env.LOCAL === 'TRUE' ? await page.goto(url, { waitUntil: 'networkidle2', timeout }) : await page.goto(url);
     //  postNavHook && await postNavHook({ page })
-
+    await page.goto(url)
     await handlePageFunction({ ...props, page })
 
     await page.close()
