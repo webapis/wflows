@@ -1,6 +1,6 @@
 {
   "name": "wflows",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "description": "workflow library",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "puppeteer": "^10.4.0"
   },
   "dependencies": {
+    "@actions/artifact": "^0.5.2",
     "console-table-printer": "^2.10.0",
     "dotenv": "^10.0.0",
     "make-dir": "^3.1.0"
