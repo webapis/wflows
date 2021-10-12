@@ -2,8 +2,10 @@
 
 const { puppeteerCrawler } = require('./index')
 
-const { handlePageFunction } = require('./books')
-
+const { handlePageFunction } = require('./books/handlePageFunction')
+process.on('exit',()=>{
+console.log('exiting')
+})
 puppeteerCrawler({ handlePageFunction, headless: true, preNavHook: null, postNavHook: null,
     
     urls: [{ url: 'https://books.toscrape.com/catalogue/category/books/religion_12/index.html', userData: {}, batchName: 'books', unshift: false, retry: false, retries: 0, sync: false }],

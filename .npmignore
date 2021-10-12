@@ -1,2 +1,11 @@
 books
 snipe.js
+
+.idea
+*.log
+*.lock
+node_modules
+yarn.lock
+.env
+
+page-data
