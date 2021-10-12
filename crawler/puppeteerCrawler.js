@@ -24,7 +24,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
     })
     eventEmitter.on(promiseEventTypes.QUEUE_EMPTY, async() => {
         await browser.close()
-        process.exit(0)
+        eventEmitter.emit('BROWSER_CLOSED')
     })
     batches.forEach(batch => {
         const { batchName, concurrencyLimit, retries } = batch;
@@ -38,7 +38,7 @@ async function puppeteerCrawler({ handlePageFunction, headless, preNavHook, post
         requestQueue.push({ ...props, uuid })
     })
 
-
+return eventEmitter
 
 }
 

@@ -140,6 +140,7 @@ function promiseConcurrency({ taskName }) {
 
     const promiseEmitter = new PromiseEmitter();
     global[`${taskName}_eventEmitter`] = promiseEmitter
+
     promiseEmitter.setMaxListeners(50);
     return promiseEmitter;
 
