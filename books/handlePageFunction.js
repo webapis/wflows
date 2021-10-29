@@ -35,24 +35,23 @@ async function handlePageFunction(props) {
   const url = await page.url()
   const sideBar = await page.$('.sidebar')
 
-  if (!url.includes('page-') && sideBar) {
 
-    const hasPagination = await page.$('.pager')
+
+    const hasPagination = await page.$('.next')
     if (hasPagination) {
+ debugger;
+      const nextPageUrl = await page.evaluate(() => {
+      return  document.querySelector('.next a').href
+   
+       })
 
-      const totalPages = await page.evaluate(() => {
-        const pager = Array.from(document.querySelector('.pager').querySelectorAll('li')).filter(f => f.classList.contains('current')).map(m => m.textContent.trim())
-        return parseInt(pager[0].substring(pager[0].indexOf('of') + 2).trim())
-      })
-
-      for (let i = 2; i <= totalPages; i++) {
-        const nextPageUrl = `https://books.toscrape.com/catalogue/category/books_1/page-${i}.html`
+    
         requestQueue.push({ ...props, url: nextPageUrl })
-      }
+      
 
     }
 
-  }
+  
 
   if (sideBar) {
 
@@ -63,7 +62,7 @@ async function handlePageFunction(props) {
   const productDetailImageContainer = await page.$('#product_description')
 
   if (productDetailImageContainer) {
-debugger;
+
     const product = await extractPageData(props)
 
     saveData({ data: product, output, filename: 'books.json' })

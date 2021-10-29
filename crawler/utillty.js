@@ -1,10 +1,10 @@
 const makeDir = require('make-dir')
 const fs = require('fs')
 const path = require('path')
-const artifact = require('@actions/artifact');
-async function saveData({ data, output, filename }) {
-    debugger;
-    const outputPath = `${process.cwd()}/data.json`
+
+async function saveData({ data, filename }) {
+
+    const outputPath = `${process.cwd()}/${filename}`
 
     let dataObject = [];
     makeDir.sync(path.dirname(outputPath))
@@ -17,24 +17,7 @@ async function saveData({ data, output, filename }) {
         dataObject.push(data);
     }
     fs.writeFileSync(outputPath, JSON.stringify(dataObject));
-  process.on('exit', async()=>{
-      
-      console.log('upload artifacts')
-      if(process.env.LOCAL!=='TRUE'){
-        const artifactClient = artifact.create()
-        const artifactName = 'data-artifact';
-        const files = [
-            outputPath
-        ]
-        const rootDirectory = process.cwd()
-        const options = {
-            continueOnError: false
-        }
-        
-        const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
-        console.log('uploadResult',uploadResult)
-      }
-  })
+
 }
 
 

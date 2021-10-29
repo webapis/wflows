@@ -67,21 +67,21 @@ class PromiseEmitter extends EventEmitter {
 
         this.on(promiseEventTypes.PROMISE_REJECTED, function (props) {
             const { uuid, batchName, retries } = props
-            debugger;
+            
 
             const promiseToRemoveIndex = this.promises.findIndex(
                 p => p.uuid === uuid
             );
             this.promises.splice(promiseToRemoveIndex, 1);
-            debugger;
+            
         
             const allowedRetries = this.registeredBatchNames[batchName].retries
-            debugger;
+            
             if (retries > 0 && retries === allowedRetries) {
-                debugger;
+                
                 this.rejected.push(props)
             } else {
-                debugger;
+                
                 let increment = retries === 0 ? 1 : 1+retries
                 debugger
                 this.queue.push({ ...props, retry: true, retries: increment })
