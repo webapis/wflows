@@ -209,7 +209,7 @@ async function renewIdToken({ api_key, refresh_token, localId }) {
 
     const { id_token, refresh_token: newRefreshToken } = await response.json()
     //update firebase
-    const fetchUrl = `${window.projectUrl}/.json?auth=${id_token}`
+    const fetchUrl = `${process.env.projectUrl}/.json?auth=${id_token}`
     const responses = await fetch(fetchUrl, { method: 'PATCH', body: JSON.stringify({ [`oauth/users/${localId}/firebase/idToken`]: id_token, [`oauth/users/${localId}/firebase/refreshToken`]: newRefreshToken,[`oauth/users/${localId}/firebase/date`]: new Date()}) })
 
     //update env
