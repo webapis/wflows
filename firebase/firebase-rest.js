@@ -49,7 +49,7 @@ function fbRest() {
                     const data = await response.json()
                     return data
                 } else {
-                    throw 'Unhandled firebase auth error'
+                    throw `SET:Unhandled firebase auth error:${error}`
                 }
             } else {
                 const data = await response.json()
@@ -79,7 +79,7 @@ function fbRest() {
                     const data = await response.json()
                     return data
                 } else {
-                    throw 'Unhandled firebase auth error'
+                    throw `GET:Unhandled firebase auth error:${error}`
                 }
             } else {
                 const data = await response.json()
@@ -111,7 +111,7 @@ function fbRest() {
                     const data = await response.json()
                     return data
                 } else {
-                    throw 'Unhandled firebase auth error'
+                    throw `UPDATE:Unhandled firebase auth error:${error}`
                 }
             } else {
                 const data = await response.json()
@@ -139,7 +139,7 @@ function fbRest() {
                     const data = await response.json()
                     return data
                 } else {
-                    throw 'Unhandled firebase auth error'
+                    throw `PUSH:Unhandled firebase auth error:${error}`
                 }
             } else {
                 const data = await response.json()
