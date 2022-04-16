@@ -106,6 +106,8 @@ function fbRest() {
 
                 const idToken = process.env.idToken
                 const refreshToken = process.env.refreshToken
+                console.log('idToken....22222',idToken)
+                console.log('refreshToken....33333',refreshToken)
                 const api_key = process.env.api_key
                 const localId = process.env.localId
                 const projectUrl = process.env.projectUrl
@@ -233,10 +235,11 @@ function fbRest() {
 
 
 async function renewIdToken({ api_key, refresh_token, localId }) {
-
+console.log('renewIdToken....4444',refresh_token)
     const response = await fetch(`https://securetoken.googleapis.com/v1/token?key=${api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refresh_token}` })
 
     const { id_token, refresh_token: newRefreshToken } = await response.json()
+    console.log('id_token....4444',id_token)
     //update firebase
     const fetchUrl = `${process.env.projectUrl}/.json?auth=${id_token}`
     const responses = await fetch(fetchUrl, { method: 'PATCH', body: JSON.stringify({ [`oauth/users/${localId}/firebase/idToken`]: id_token, [`oauth/users/${localId}/firebase/refreshToken`]: newRefreshToken, [`oauth/users/${localId}/firebase/date`]: new Date() }) })
