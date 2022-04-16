@@ -235,6 +235,11 @@ function fbRest() {
 
 
 async function renewIdToken({ api_key, refresh_token, localId }) {
+    try {
+        
+    } catch (error) {
+        
+    }
 console.log('renewIdToken....4444',refresh_token)
     const response = await fetch(`https://securetoken.googleapis.com/v1/token?key=${api_key}`, { method: 'post', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `grant_type=refresh_token&refresh_token=${refresh_token}` })
 
