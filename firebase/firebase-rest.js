@@ -99,7 +99,7 @@ function fbRest() {
             }
 
         },
-        update: async function (data,) {
+        update: async function (data) {
             try {
 
 
@@ -108,6 +108,7 @@ function fbRest() {
                 const refreshToken = process.env.refreshToken
                 console.log('idToken....22222', idToken)
                 console.log('refreshToken....33333', refreshToken)
+                console.log('fetchUrl...6666',fetchUrl)
                 const api_key = process.env.api_key
                 const localId = process.env.localId
                 const projectUrl = process.env.projectUrl
@@ -123,6 +124,7 @@ function fbRest() {
 
                         await renewIdToken({ api_key, refresh_token: refreshToken, localId })
                         const refreshedIdToken = process.env.idToken
+                        console.log('refreshedIdToken....555555', refreshedIdToken)
                         const fetchUrl2 = this.url === '/' ? `${projectUrl}/.json?auth=${refreshedIdToken}` : `${projectUrl}/${this.url}.json?auth=${refreshedIdToken}`
                         const response = await fetch(fetchUrl2, { method: 'GET' })
                         const data = await response.json()
